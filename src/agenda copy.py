@@ -26,7 +26,7 @@ NOMBRE_FICHERO = 'contactos.csv'
 RUTA_FICHERO = path.join(RUTA, NOMBRE_FICHERO)
 
 #TODO: Crear un conjunto con las posibles opciones del menú de la agenda
-OPCIONES_MENU = ?
+OPCIONES_MENU = {1, 2, 3, 4, 5, 6, 7, 8}
 #TODO: Utiliza este conjunto en las funciones agenda() y pedir_opcion()
 
 
@@ -56,7 +56,7 @@ def eliminar_contacto(contactos: list, email: str):
     """
     try:
         #TODO: Crear función buscar_contacto para recuperar la posición de un contacto con un email determinado
-        pos = posicion_contacto(contactos)
+        pos = buscar_contacto(contactos)
         if pos != None:
             del contactos[pos]
             print("Se eliminó 1 contacto")
@@ -67,7 +67,7 @@ def eliminar_contacto(contactos: list, email: str):
         print("No se eliminó ningún contacto")
 
 
-def posicion_contacto(contactos):
+def buscar_contacto(contactos):
     
 
 
@@ -82,8 +82,18 @@ def agenda(contactos: list):
         opcion = pedir_opcion()
 
         #TODO: Se valorará que utilices la diferencia simétrica de conjuntos para comprobar que la opción es un número entero del 1 al 6
-        if opcion in ?:
+        if opcion in OPCIONES_MENU:
+            
 
+
+def mostrar_menu():
+    print('AGENDA')
+    print('-'*6)
+    print('1. Nuevo contacto \n2. Modificar contacto \n3. Eliminar contacto \n4. Vaciar agenda \n5. Cargar agenda inicial \n6. Mostrar contactos por criterio \n7. Mostrar la agenda completa \n8. Salir')
+    
+
+def pedir_opcion():
+    return input('>> Seleccione una opción: ')
 
 
 def pulse_tecla_para_continuar():
@@ -99,11 +109,11 @@ def main():
     borrar_consola()
 
     #TODO: Asignar una estructura de datos vacía para trabajar con la agenda
-    contactos = ?
+    contactos = {}
 
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
     #TODO: Realizar una llamada a la función cargar_contacto con todo lo necesario para que funcione correctamente.
-    cargar_contactos(?)
+    cargar_contactos(contactos)
 
     #TODO: Crear función para agregar un contacto. Debes tener en cuenta lo siguiente:
     # - El nombre y apellido no pueden ser una cadena vacía o solo espacios y se guardarán con la primera letra mayúscula y el resto minúsculas (ojo a los nombre compuestos)
