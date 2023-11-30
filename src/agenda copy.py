@@ -134,7 +134,7 @@ def mostrar_menu():
     """
     print('AGENDA')
     print('-'*6)
-    print('1. Nuevo contacto \n2. Modificar contacto \n3. Eliminar contacto \n4. Vaciar agenda \n5. Cargar agenda inicial \n6. Mostrar contactos por criterio \n7. Mostrar la agenda completa \n8. Salir')
+    print('1. Nuevo contacto \n2. Modificar contacto \n3. Eliminar contacto \n4. Vaciar agenda \n5. Cargar agenda inicial \n6. Mostrar contactos por criterio \n7. Mostrar la agenda completa \n8. Salir\n')
     
 
 def pedir_opcion():
@@ -184,7 +184,7 @@ def agregar_contacto(contactos: dict):
     telefonos = []
     cont = 1
     while True:
-        telefono = input(f'Telefono({cont})-> ')
+        telefono = input(f'Telefono({cont})-> ').replace(' ', '')
         
         if not telefono:
             break
@@ -194,6 +194,7 @@ def agregar_contacto(contactos: dict):
             
         if len(telefono) != 9:
             print('Teléfono inválido, debe contener 9 dígitos.')
+            telefono = input(f'Telefono({cont})-> ').replace(' ', '')
         else:
             telefonos.append(telefono)
             
@@ -207,7 +208,7 @@ def agregar_contacto(contactos: dict):
     return contactos
 
 
-def mostrar_contactos(contactos)
+def mostrar_contactos(contactos):
 
 
 def main():
@@ -239,6 +240,7 @@ def main():
     borrar_consola()
 
     #TODO: Realizar una llamada a la función eliminar_contacto con todo lo necesario para que funcione correctamente, eliminando el contacto con el email rciruelo@gmail.com
+    email = 'rciruelo@gmail.com'
     eliminar_contacto(contactos, email)
 
     pulse_tecla_para_continuar()
@@ -261,7 +263,7 @@ def main():
     # ** resto de contactos **
     #
     #TODO: Realizar una llamada a la función mostrar_contactos con todo lo necesario para que funcione correctamente.
-    mostrar_contactos(contactos)
+   # mostrar_contactos(contactos)
 
     pulse_tecla_para_continuar()
     borrar_consola()
