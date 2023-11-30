@@ -40,7 +40,7 @@ def borrar_consola():
         os.system ("cls")
 
 
-def cargar_contactos(contactos: dict):
+def cargar_contactos(contactos: list):
     """Carga los contactos iniciales de la agenda desde un fichero
 
     Args:
@@ -49,15 +49,16 @@ def cargar_contactos(contactos: dict):
     #TODO: Controlar los posibles problemas derivados del uso de ficheros...
     try:
         with open(RUTA_FICHERO, 'r') as fichero:
-            contact_csv = csv.DictReader(fichero)
-            for contacto in fichero:
-                email = contacto['email']
-                contactos[email] = {'nombre': contacto['nombre'], 'apellido': contacto['apellido'], 'telefonos': contacto['telefonos'].split(', ')}
+            for linea in fichero:
+                linea = linea.split(';')
+                contacto = {'nombre': linea[0], 'apellido': linea[1], 'email': linea[2], 'telefonos':linea[3:]}
+                contactos.append(contacto)
     except Exception:
         print(f'Error al cargar contactos')
+    
 
 
-def eliminar_contacto(contactos: dict, email: str):
+def eliminar_contacto(contactos: list, email: str):
     """Elimina un contacto de la agenda
 
     Args:
@@ -77,21 +78,15 @@ def eliminar_contacto(contactos: dict, email: str):
         print("No se eliminó ningún contacto")
 
 
-def buscar_contacto(contactos: dict, email: str):
+def buscar_contacto(contactos: list, email: str):
     """Busca un contacto por el email en el diccionario de contactos
 
     Args:
-        contactos (dict): _description_
-        email (str): _description_
-
-    Returns:
-    
-        si no encuentra el contacto retorna None
+        contactos (list): lista de contactos
+        email (str): email del contacto
+        
     """
-    for i, contacto in contactos.items():
-        if contacto['email'] == email:
-            return i
-    return None
+    
 
 
 
@@ -102,11 +97,11 @@ def agenda(contactos: list):
         contactos (list): _description_
     """
     #TODO: Crear un bucle para mostrar el menú y ejecutar las funciones necesarias según la opción seleccionada... 
-    while True:
+    while opcion != 8:
         mostrar_menu()
         opcion = pedir_opcion()
 
-        #TODO: Se valorará que utilices la diferencia simétrica de conjuntos para comprobar que la opción es un número entero del 1 al 6
+        #TODO: Se valorará que utilices la diferencia simétrica de conjuntos para comprobar que la opción es un número entero del 1 al 7
         if opcion in OPCIONES_MENU:
             if opcion == 1:
                 agregar_contacto(contactos)
@@ -122,8 +117,6 @@ def agenda(contactos: list):
                 mostrar_contactos_por_criterio(contactos)
             elif opcion == 7:
                 mostrar_contactos(contactos)
-            elif opcion == 8:
-                break
         else: 
             print('Opción no válida. Introduzca una opción del menú.')
         
@@ -153,12 +146,14 @@ def pulse_tecla_para_continuar():
     os.system("pause")
 
 
-def agregar_contacto(contactos: dict):
+def agregar_contacto(contactos: list):
     """pide los datos del contacto y los agrega a la agenda
 
     Args:
         contactos (dict): _description_
     """
+    contacto = {}
+    
     nombre = input("Ingrese el nombre: ")
     nombre = nombre.strip().title()
     while not nombre:
@@ -199,16 +194,19 @@ def agregar_contacto(contactos: dict):
             telefonos.append(telefono)
             
         cont += 1
+    
+        contacto.setdefault('nombre', nombre)
+        contacto.setdefault('apellido', apellido)
+        contacto.setdefault('email', email)
+        contacto.setdefault('telefono', telefonos)
         
-    contactos.setdefault('nombre', nombre)
-    contactos.setdefault('apellido', apellido)
-    contactos.setdefault('email', email)
-    contactos.setdefault('telefonos', telefonos)
+        contactos.append(contacto)
+   
     
     return contactos
 
 
-def mostrar_contactos(contactos):
+#def mostrar_contactos(contactos):
 
 
 def main():
@@ -217,11 +215,12 @@ def main():
     borrar_consola()
 
     #TODO: Asignar una estructura de datos vacía para trabajar con la agenda
-    contactos = {}
+    contactos = []
 
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
     #TODO: Realizar una llamada a la función cargar_contacto con todo lo necesario para que funcione correctamente.
     cargar_contactos(contactos)
+    print(contactos)
 
     #TODO: Crear función para agregar un contacto. Debes tener en cuenta lo siguiente:
     # - El nombre y apellido no pueden ser una cadena vacía o solo espacios y se guardarán con la primera letra mayúscula y el resto minúsculas (ojo a los nombre compuestos)
@@ -264,7 +263,8 @@ def main():
     #
     #TODO: Realizar una llamada a la función mostrar_contactos con todo lo necesario para que funcione correctamente.
    # mostrar_contactos(contactos)
-
+    mostrar_contactos()
+    
     pulse_tecla_para_continuar()
     borrar_consola()
 
