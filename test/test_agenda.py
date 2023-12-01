@@ -3,7 +3,7 @@ from os import path
 import pathlib
 import pytest
 
-from ExamenU3.agenda_solucion_doc import(
+from src.agenda_copy import(
     cargar_contactos,
     validar_email,
     pedir_email,
@@ -25,11 +25,16 @@ CONTACTOS_PRUEBA = [
     {"nombre": "Daniela", "apellido": "Alba", "email": "danalba@gmail.com", "telefonos": ["+34600606060", "+34670898934"]},
     {"nombre": "Rogelio", "apellido": "Rojo", "email": "rogrojo@gmail.com", "telefonos": ["610000099", "645000013"]}
 ]
-
+CONTACTOS_EMAILS = ["liglesias@gmail.com", "aamargo@gmail.com", "marcopete@gmail.com", "rciruelo@gmail.com", "danalba@gmail.com", "rogrojo@gmail.com"]
 
 @pytest.fixture
 def contactos_iniciales() -> list:
     return copy.deepcopy(CONTACTOS_PRUEBA)
+
+
+@pytest.fixture
+def contactos_email() -> list:
+    return copy.deepcopy(CONTACTOS_EMAILS)
 
 
 def test_cargar_contactos(contactos_iniciales):
@@ -38,25 +43,25 @@ def test_cargar_contactos(contactos_iniciales):
     assert contactos == contactos_iniciales
 
 
-def test_validar_email(contactos_iniciales):
+def test_validar_email(contactos_email):
     with pytest.raises(ValueError, match="el email no puede ser una cadena vacía"):
-        validar_email("", contactos_iniciales, False)
+        validar_email("", contactos_email)
     with pytest.raises(ValueError, match="el email no es un correo válido"):
-        validar_email("correosinarroba.com", contactos_iniciales, False)
+        validar_email("correosinarroba.com", contactos_email)
     with pytest.raises(ValueError, match="el email ya existe en la agenda"):
-        validar_email("rogrojo@gmail.com", contactos_iniciales, True)
+        validar_email("rogrojo@gmail.com", contactos_email)
 
 
-def test_pedir_email(monkeypatch, contactos_iniciales):
+def test_pedir_email(monkeypatch, contactos_email):
     monkeypatch.setattr('builtins.input', lambda _: "")
     with pytest.raises(ValueError, match="el email no puede ser una cadena vacía"):
-        pedir_email(contactos_iniciales, False)
+        pedir_email(contactos_email, False)
     monkeypatch.setattr('builtins.input', lambda _: "correosinarroba.com")
     with pytest.raises(ValueError, match="el email no es un correo válido"):
-        pedir_email(contactos_iniciales, False)
+        pedir_email(contactos_email, False)
     monkeypatch.setattr('builtins.input', lambda _: "marcopete@gmail.com")
     with pytest.raises(ValueError, match="el email ya existe en la agenda"):
-        pedir_email(contactos_iniciales, True)
+        pedir_email(contactos_email, True)
 
 
 @pytest.mark.parametrize(
