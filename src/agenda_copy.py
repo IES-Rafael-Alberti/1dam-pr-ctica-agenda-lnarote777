@@ -315,7 +315,6 @@ def pedir_email(exist_email:list):
     Returns:
         str: cadena de caracteres
     """
-    
     while True:
         email = input('Introduzca el email: ')
         try: 
@@ -364,7 +363,9 @@ def pedir_telefono():
         if not telefono:
             break
         
-        telf = validar_telefono(telefono)
+        validar_telefono(telefono)
+        if validar_telefono(telefono) == True:
+            telf = telefono
         
         telefonos.append(telf)
         
