@@ -47,12 +47,15 @@ def cargar_contactos(contactos: list):
         contactos (list): lista de contactos con los datos de cada contacto
     """
     #TODO: Controlar los posibles problemas derivados del uso de ficheros...
+    email_existentes = []
     try:
         with open(RUTA_FICHERO, 'r') as fichero:
             for linea in fichero:
                 linea = linea.strip('\n').split(';')
                 contacto = {'nombre': linea[0], 'apellido': linea[1], 'email': linea[2], 'telefonos':linea[3:]}
                 contactos.append(contacto)
+                email_existentes.append(contacto['email'])
+            return email_existentes
     except Exception:
         print(f'Error al cargar contactos')
     
@@ -91,7 +94,7 @@ def buscar_contacto(contactos: list, email: str):
     return None
 
 
-def agenda(contactos: list):
+def agenda(contactos: list, exist_email: list):
     """Ejecuta el menú de la agenda con varias opciones
 
     Args:
@@ -262,7 +265,7 @@ def pulse_tecla_para_continuar():
     os.system("pause")
 
 
-def agregar_contacto(contactos: list):
+def agregar_contacto(contactos: list, exist_email:list):
     """Pide los datos del contacto y los agrega a la agenda
 
     Args:
@@ -289,7 +292,7 @@ def agregar_contacto(contactos: list):
         apellido = apellido.title()
     
       
-    email = pedir_email(contactos)
+    email = pedir_email(exist_email)
     
     
     print('Introduzca los teléfonos del contacto. (Deje en blanco para terminar)')
@@ -306,17 +309,17 @@ def agregar_contacto(contactos: list):
     return contactos
 
 
-def pedir_email(contactos: list):
+def pedir_email(exist_email:list):
     """Pide el email al usuario
 
     Returns:
         str: cadena de caracteres
     """
-    email_existentes = contactos
+    
     while True:
         email = input('Introduzca el email: ')
         try: 
-            validar_email(email, email_existentes)
+            validar_email(email, exist_email)
             return email
         except ValueError as e:
             print(e)
@@ -336,7 +339,7 @@ def validar_email(email: str, email_existentes: list):
         raise ValueError ('el email no puede ser una cadena vacía')      
     elif '@' not in email:
         raise ValueError ('el email no es un correo válido')
-    elif email in email_existentes :
+    elif email in email_existentes :    
         raise ValueError ('el email ya existe en la agenda')
     else:
         return email
@@ -424,7 +427,8 @@ def main():
 
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
     #TODO: Realizar una llamada a la función cargar_contacto con todo lo necesario para que funcione correctamente.
-    cargar_contactos(contactos)
+    
+    exist_email = cargar_contactos(contactos)
 
     #TODO: Crear función para agregar un contacto. Debes tener en cuenta lo siguiente:
     # - El nombre y apellido no pueden ser una cadena vacía o solo espacios y se guardarán con la primera letra mayúscula y el resto minúsculas (ojo a los nombre compuestos)
@@ -437,7 +441,7 @@ def main():
     # - De igual manera, aunque existan espacios entre el prefijo y los 9 números al introducirlo, debe almacenarse sin espacios.
     # - Por ejemplo, será posible introducir el número +34 600 100 100, pero guardará +34600100100 y cuando se muestren los contactos, el telófono se mostrará como +34-600100100. 
     #TODO: Realizar una llamada a la función agregar_contacto con todo lo necesario para que funcione correctamente.
-    agregar_contacto(contactos)
+    agregar_contacto(contactos, exist_email)
 
     pulse_tecla_para_continuar()
     borrar_consola()
@@ -487,7 +491,7 @@ def main():
     #
     #TODO: Para la opción 3, modificar un contacto, deberás desarrollar las funciones necesarias para actualizar la información de un contacto.
     #TODO: También deberás desarrollar la opción 6 que deberá preguntar por el criterio de búsqueda (nombre, apellido, email o telefono) y el valor a buscar para mostrar los contactos que encuentre en la agenda.
-    agenda(contactos)
+    agenda(contactos, exist_email)
 
 
 if __name__ == "__main__":
